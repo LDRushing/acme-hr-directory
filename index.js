@@ -2,17 +2,17 @@ const express = require('express')
 const app = express()
 const pg = require('pg')
 const client = new pg.Client(
-  process.env.DATABASE_URL || 'postgres://localhost/acme_hr_db'
+  process.env.DATABASE_URL || 'postgres://localhost/acme_hr_directory'
 )
 const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(require('morgan')('dev'))
 
-app.get('/api/hr', async (req, res, next) => {
+app.get('/api/hr_directory', async (req, res, next) => {
   try {
     const SQL = `
-      SELECT * from categories
+      SELECT * from employees
     `
     const response = await client.query(SQL)
     res.send(response.rows)
@@ -21,10 +21,10 @@ app.get('/api/hr', async (req, res, next) => {
   }
 })
 
-app.get('/api/hr', async (req, res, next) => {
+app.get('/api/hr_directory', async (req, res, next) => {
   try {
     const SQL = `
-      SELECT * from notes ORDER BY created_at DESC;
+      SELECT * from employees ORDER BY created_at DESC;
     `
     const response = await client.query(SQL)
     res.send(response.rows)
@@ -33,10 +33,10 @@ app.get('/api/hr', async (req, res, next) => {
   }
 })
 
-app.post('/api/hr', async (req, res, next) => {
+app.post('/api/hr_directory', async (req, res, next) => {
   try {
     const SQL = `
-      INSERT INTO notes(txt, category_id)
+      INSERT INTO employees(txt, category_id)
       VALUES($1, $2)
       RETURNING *
     `
@@ -47,10 +47,10 @@ app.post('/api/hr', async (req, res, next) => {
   }
 })
 
-app.put('/api/hr/:id', async (req, res, next) => {
+app.put('/api/hr_directory/:id', async (req, res, next) => {
   try {
     const SQL = `
-      UPDATE notes
+      UPDATE employees
       SET txt=$1, ranking=$2, category_id=$3, updated_at= now()
       WHERE id=$4 RETURNING *
     `
@@ -66,10 +66,10 @@ app.put('/api/hr/:id', async (req, res, next) => {
   }
 })
 
-app.delete('/api/notes/:id', async (req, res, next) => {
+app.delete('/api/hr_directory/:id', async (req, res, next) => {
   try {
     const SQL = `
-      DELETE from notes
+      DELETE from employees
       WHERE id = $1
     `
     const response = await client.query(SQL, [req.params.id])
@@ -82,9 +82,9 @@ app.delete('/api/notes/:id', async (req, res, next) => {
 const init = async () => {
   await client.connect()
   let SQL = `
-    DROP TABLE IF EXISTS notes;
-    DROP TABLE IF EXISTS categories;
-    CREATE TABLE categories(
+    DROP TABLE IF EXISTS employees;
+    DROP TABLE IF EXISTS departments;
+    CREATE TABLE employees(
       id SERIAL PRIMARY KEY,
       name VARCHAR(100)
     );
@@ -100,14 +100,14 @@ const init = async () => {
   await client.query(SQL)
   console.log('tables created')
   SQL = `
-    INSERT INTO categories(name) VALUES('SQL');
-    INSERT INTO categories(name) VALUES('Express');
-    INSERT INTO categories(name) VALUES('Shopping');
-    INSERT INTO notes(txt, ranking, category_id) VALUES('learn express', 5, (SELECT id FROM categories WHERE name='Express'));
-    INSERT INTO notes(txt, ranking, category_id) VALUES('add logging middleware', 5, (SELECT id FROM categories WHERE name='Express'));
-    INSERT INTO notes(txt, ranking, category_id) VALUES('write SQL queries', 4, (SELECT id FROM categories WHERE name='SQL'));
-    INSERT INTO notes(txt, ranking, category_id) VALUES('learn about foreign keys', 4, (SELECT id FROM categories WHERE name='SQL'));
-    INSERT INTO notes(txt, ranking, category_id) VALUES('buy a quart of milk', 2, (SELECT id FROM categories WHERE name='Shopping'));
+    INSERT INTO departments(name) VALUES('SQL');
+    INSERT INTO departments(name) VALUES('Express');
+    INSERT INTO departments(name) VALUES('Shopping');
+    INSERT INTO employees(txt, ranking, category_id) VALUES('learn express', 5, (SELECT id FROM categories WHERE name='Express'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('add logging middleware', 5, (SELECT id FROM categories WHERE name='Express'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('write SQL queries', 4, (SELECT id FROM categories WHERE name='SQL'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('learn about foreign keys', 4, (SELECT id FROM categories WHERE name='SQL'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('buy a quart of milk', 2, (SELECT id FROM categories WHERE name='Shopping'));
   `
   await client.query(SQL)
   console.log('data seeded')
