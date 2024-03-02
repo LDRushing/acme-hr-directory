@@ -47,6 +47,19 @@ app.post('/api/hr_directory', async (req, res, next) => {
   }
 })
 
+app.delete('/api/hr_directory/:id', async (req, res, next) => {
+    try {
+      const SQL = `
+        DELETE from employees
+        WHERE id = $1
+      `
+      const response = await client.query(SQL, [req.params.id])
+      res.sendStatus(204)
+    } catch (ex) {
+      next(ex)
+    }
+  })
+
 app.put('/api/hr_directory/:id', async (req, res, next) => {
   try {
     const SQL = `
@@ -61,19 +74,6 @@ app.put('/api/hr_directory/:id', async (req, res, next) => {
       req.params.id
     ])
     res.send(response.rows[0])
-  } catch (ex) {
-    next(ex)
-  }
-})
-
-app.delete('/api/hr_directory/:id', async (req, res, next) => {
-  try {
-    const SQL = `
-      DELETE from employees
-      WHERE id = $1
-    `
-    const response = await client.query(SQL, [req.params.id])
-    res.sendStatus(204)
   } catch (ex) {
     next(ex)
   }
