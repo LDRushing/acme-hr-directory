@@ -36,7 +36,7 @@ app.get('/api/hr_directory', async (req, res, next) => {
 app.post('/api/hr_directory', async (req, res, next) => {
   try {
     const SQL = `
-      INSERT INTO employees(txt, category_id)
+      INSERT INTO employees(name, category_id)
       VALUES($1, $2)
       RETURNING *
     `
