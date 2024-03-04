@@ -93,21 +93,21 @@ const init = async () => {
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP DEFAULT now(),
       ranking INTEGER DEFAULT 3 NOT NULL,
-      txt VARCHAR(255) NOT NULL,
+      employees VARCHAR(255) NOT NULL,
       category_id INTEGER REFERENCES categories(id) NOT NULL
     );
   `
   await client.query(SQL)
   console.log('tables created')
   SQL = `
-    INSERT INTO departments(name) VALUES('SQL');
-    INSERT INTO departments(name) VALUES('Express');
-    INSERT INTO departments(name) VALUES('Shopping');
-    INSERT INTO employees(txt, ranking, category_id) VALUES('learn express', 5, (SELECT id FROM categories WHERE name='Express'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('add logging middleware', 5, (SELECT id FROM categories WHERE name='Express'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('write SQL queries', 4, (SELECT id FROM categories WHERE name='SQL'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('learn about foreign keys', 4, (SELECT id FROM categories WHERE name='SQL'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('buy a quart of milk', 2, (SELECT id FROM categories WHERE name='Shopping'));
+    INSERT INTO departments(name) VALUES('Stow');
+    INSERT INTO departments(name) VALUES('Pick');
+    INSERT INTO departments(name) VALUES('Ship Dock');
+    INSERT INTO employees(txt, ranking, category_id) VALUES('Jenni Smith', 5, (SELECT id FROM categories WHERE name='Pick'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('Pepper Thompson', 5, (SELECT id FROM categories WHERE name='Pick'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('Jimmy Arthur', 4, (SELECT id FROM categories WHERE name='Stow'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('Beth Caspian', 4, (SELECT id FROM categories WHERE name='Stow'));
+    INSERT INTO employees(txt, ranking, category_id) VALUES('Lauri Underwood', 2, (SELECT id FROM categories WHERE name='Ship Dock'));
   `
   await client.query(SQL)
   console.log('data seeded')
