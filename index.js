@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000
 app.use(express.json())
 app.use(require('morgan')('dev'))
 
-app.get('/api/hr_directory', async (req, res, next) => {
+app.get('/api/acme_hr_directory', async (req, res, next) => {
   try {
     const SQL = `
       SELECT * from employees
@@ -21,7 +21,7 @@ app.get('/api/hr_directory', async (req, res, next) => {
   }
 })
 
-app.get('/api/hr_directory', async (req, res, next) => {
+app.get('/api/acme_hr_directory', async (req, res, next) => {
   try {
     const SQL = `
       SELECT * from employees ORDER BY created_at DESC;
@@ -33,7 +33,19 @@ app.get('/api/hr_directory', async (req, res, next) => {
   }
 })
 
-app.post('/api/hr_directory', async (req, res, next) => {
+app.get('/api/acme_hr_directory/:id', async (req, res, next) => {
+  try {
+    const SQL = `
+      SELECT * from employees ORDER BY created_at DESC;
+    `
+    const response = await client.query(SQL)
+    res.send(response.rows)
+  } catch (ex) {
+    next(ex)
+  }
+})
+
+app.post('/api/acme_hr_directory', async (req, res, next) => {
   try {
     const SQL = `
       INSERT INTO employees(name, category_id)
@@ -47,7 +59,7 @@ app.post('/api/hr_directory', async (req, res, next) => {
   }
 })
 
-app.delete('/api/hr_directory/:id', async (req, res, next) => {
+app.delete('/api/acme_hr_directory/:id', async (req, res, next) => {
     try {
       const SQL = `
         DELETE from employees
@@ -60,7 +72,7 @@ app.delete('/api/hr_directory/:id', async (req, res, next) => {
     }
   })
 
-app.put('/api/hr_directory/:id', async (req, res, next) => {
+app.put('/api/acme_hr_directory/:id', async (req, res, next) => {
   try {
     const SQL = `
       UPDATE employees
