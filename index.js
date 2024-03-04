@@ -103,11 +103,11 @@ const init = async () => {
     INSERT INTO departments(name) VALUES('Stow');
     INSERT INTO departments(name) VALUES('Pick');
     INSERT INTO departments(name) VALUES('Ship Dock');
-    INSERT INTO employees(txt, ranking, category_id) VALUES('Jenni Smith', 5, (SELECT id FROM categories WHERE name='Pick'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('Pepper Thompson', 5, (SELECT id FROM categories WHERE name='Pick'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('Jimmy Arthur', 4, (SELECT id FROM categories WHERE name='Stow'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('Beth Caspian', 4, (SELECT id FROM categories WHERE name='Stow'));
-    INSERT INTO employees(txt, ranking, category_id) VALUES('Lauri Underwood', 2, (SELECT id FROM categories WHERE name='Ship Dock'));
+    INSERT INTO employees(employees, ranking, category_id) VALUES('Jenni Smith', Manager, (SELECT id FROM categories WHERE name='Pick'));
+    INSERT INTO employees(employees, ranking, category_id) VALUES('Pepper Thompson', Manager, (SELECT id FROM categories WHERE name='Pick'));
+    INSERT INTO employees(employees, ranking, category_id) VALUES('Jimmy Arthur', Manager, (SELECT id FROM categories WHERE name='Stow'));
+    INSERT INTO employees(employees, ranking, category_id) VALUES('Beth Caspian', Process Assistant, (SELECT id FROM categories WHERE name='Stow'));
+    INSERT INTO employees(employees, ranking, category_id) VALUES('Lauri Underwood', Manager, (SELECT id FROM categories WHERE name='Ship Dock'));
   `
   await client.query(SQL)
   console.log('data seeded')
