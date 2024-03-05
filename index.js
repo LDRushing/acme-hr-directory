@@ -94,19 +94,19 @@ app.put('/api/acme_hr_directory/:id', async (req, res, next) => {
 const init = async () => {
   await client.connect()
   let SQL = `
-    DROP TABLE IF EXISTS employees;
+    DROP TABLE IF EXISTS employees cascade;
     DROP TABLE IF EXISTS departments;
-    CREATE TABLE employees(
+    CREATE TABLE departments(
       id SERIAL PRIMARY KEY,
       name VARCHAR(100)
     );
-    CREATE TABLE notes(
+    CREATE TABLE employees(
       id SERIAL PRIMARY KEY,
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP DEFAULT now(),
       ranking INTEGER DEFAULT 3 NOT NULL,
       employees VARCHAR(255) NOT NULL,
-      category_id INTEGER REFERENCES categories(id) NOT NULL
+      department_id INTEGER REFERENCES departments(id) NOT NULL
     );
   `
   await client.query(SQL)
@@ -115,13 +115,13 @@ const init = async () => {
     INSERT INTO departments(name) VALUES('Stow');
     INSERT INTO departments(name) VALUES('Pick');
     INSERT INTO departments(name) VALUES('Ship Dock');
-    INSERT INTO employees(employees, ranking, category_id) VALUES('Jenni Smith', Manager, (SELECT id FROM categories WHERE name='Pick'));
-    INSERT INTO employees(employees, ranking, category_id) VALUES('Pepper Thompson', Manager, (SELECT id FROM categories WHERE name='Pick'));
-    INSERT INTO employees(employees, ranking, category_id) VALUES('Jimmy Arthur', Manager, (SELECT id FROM categories WHERE name='Stow'));
-    INSERT INTO employees(employees, ranking, category_id) VALUES('Beth Caspian', Process Assistant, (SELECT id FROM categories WHERE name='Stow'));
-    INSERT INTO employees(employees, ranking, category_id) VALUES('Lauri Underwood', Manager, (SELECT id FROM categories WHERE name='Ship Dock'));
+    INSERT INTO employees(employees, ranking, department_id) VALUES('Jenni Smith', 4, (SELECT id FROM departments WHERE name='Pick'));
+    INSERT INTO employees(employees, ranking, department_id) VALUES('Pepper Thompson', 4, (SELECT id FROM departments WHERE name='Pick'));
+    INSERT INTO employees(employees, ranking, department_id) VALUES('Jimmy Arthur', 4, (SELECT id FROM departments WHERE name='Stow'));
+    INSERT INTO employees(employees, ranking, department_id) VALUES('Beth Caspian', 3, (SELECT id FROM departments WHERE name='Stow'));
+    INSERT INTO employees(employees, ranking, department_id) VALUES('Lauri Underwood', 5, (SELECT id FROM departments WHERE name='Ship Dock'));
   `
-  await client.query(SQL)
+  await client.query(SQL) //Cascade drops any foreign key that's reference that specific table's ID. 
   console.log('data seeded')
   app.listen(port, () => console.log(`listening on port ${port}`))
 }
