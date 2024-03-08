@@ -103,11 +103,11 @@ const init = async () => {
     INSERT INTO departments(name) VALUES('Stow');
     INSERT INTO departments(name) VALUES('Pick');
     INSERT INTO departments(name) VALUES('Ship Dock');
-    INSERT INTO employees(employees, ranking, department_id) VALUES('Jenni Smith', 4, (SELECT id FROM departments WHERE name='Pick'));
-    INSERT INTO employees(employees, ranking, department_id) VALUES('Pepper Thompson', 4, (SELECT id FROM departments WHERE name='Pick'));
-    INSERT INTO employees(employees, ranking, department_id) VALUES('Jimmy Arthur', 4, (SELECT id FROM departments WHERE name='Stow'));
-    INSERT INTO employees(employees, ranking, department_id) VALUES('Beth Caspian', 3, (SELECT id FROM departments WHERE name='Stow'));
-    INSERT INTO employees(employees, ranking, department_id) VALUES('Lauri Underwood', 5, (SELECT id FROM departments WHERE name='Ship Dock'));
+    INSERT INTO employees(employees, ranking, departments) VALUES('Jenni Smith', 4, (SELECT id FROM departments WHERE name='Pick'));
+    INSERT INTO employees(employees, ranking, departments) VALUES('Pepper Thompson', 4, Pick;
+    INSERT INTO employees(employees, ranking, departments VALUES('Jimmy Arthur', 4, 'Stow';
+    INSERT INTO employees(employees, ranking, departments) VALUES('Beth Caspian', 3, 'Stow';
+    INSERT INTO employees(employees, ranking, departments) VALUES('Lauri Underwood', 5, Ship Dock;
   `
   await client.query(SQL) //Cascade drops any foreign key that's reference that specific table's ID. 
   console.log('data seeded')
