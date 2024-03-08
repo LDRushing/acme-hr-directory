@@ -98,8 +98,8 @@ const init = async () => {
     );
   `
   await client.query(SQL)
-  console.log('tables created')
-  SQL = `
+  console.log('tables created') //keep this table below as is
+  SQL = ` 
     INSERT INTO departments(name) VALUES('Stow');
     INSERT INTO departments(name) VALUES('Pick');
     INSERT INTO departments(name) VALUES('Ship Dock');
