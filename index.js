@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const pg = require('pg')
 const client = new pg.Client(
-  process.env.DATABASE_URL || 'postgres://localhost/employees', 'api/acme_hr_departments'
+  process.env.DATABASE_URL || 'postgres://localhost/employees'
 )
 const port = process.env.PORT || 3000
 
