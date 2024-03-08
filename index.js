@@ -2,14 +2,14 @@ const express = require('express')
 const app = express()
 const pg = require('pg')
 const client = new pg.Client(
-  process.env.DATABASE_URL || 'postgres://localhost/acme_hr_directory'
+  process.env.DATABASE_URL || 'postgres://localhost/employees', 'api/acme_hr_departments'
 )
 const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(require('morgan')('dev'))
 
-app.get('/api/acme_hr_directory', async (req, res, next) => {
+app.get('/api/employees', async (req, res, next) => {
   try {
     const SQL = `
       SELECT * from employees
@@ -21,7 +21,7 @@ app.get('/api/acme_hr_directory', async (req, res, next) => {
   }
 })
 
-app.get('/api/acme_hr_directory', async (req, res, next) => {
+app.get('/api/departments', async (req, res, next) => {
   try {
     const SQL = `
       SELECT * from employees ORDER BY created_at DESC;
@@ -33,19 +33,7 @@ app.get('/api/acme_hr_directory', async (req, res, next) => {
   }
 })
 
-app.get('/api/acme_hr_directory/:id', async (req, res, next) => {
-  try {
-    const SQL = `
-      SELECT * from employees ORDER BY created_at DESC;
-    `
-    const response = await client.query(SQL)
-    res.send(response.rows)
-  } catch (ex) {
-    next(ex)
-  }
-})
-
-app.post('/api/acme_hr_directory', async (req, res, next) => {
+app.post('/api/employees', async (req, res, next) => {
   try {
     const SQL = `
       INSERT INTO employees(name, category_id)
@@ -59,7 +47,7 @@ app.post('/api/acme_hr_directory', async (req, res, next) => {
   }
 })
 
-app.delete('/api/acme_hr_directory/:id', async (req, res, next) => {
+app.delete('/api/employees/:id', async (req, res, next) => {
     try {
       const SQL = `
         DELETE from employees
@@ -72,7 +60,7 @@ app.delete('/api/acme_hr_directory/:id', async (req, res, next) => {
     }
   })
 
-app.put('/api/acme_hr_directory/:id', async (req, res, next) => {
+app.put('/api/employees/:id', async (req, res, next) => {
   try {
     const SQL = `
       UPDATE employees
