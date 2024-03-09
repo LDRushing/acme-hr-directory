@@ -24,7 +24,7 @@ app.get('/api/employees', async (req, res, next) => {
 app.get('/api/departments', async (req, res, next) => {
   try {
     const SQL = `
-      SELECT * from employees ORDER BY created_at DESC;
+      SELECT * from departments ORDER BY created_at DESC;
     `
     const response = await client.query(SQL)
     res.send(response.rows)
@@ -36,11 +36,11 @@ app.get('/api/departments', async (req, res, next) => {
 app.post('/api/employees', async (req, res, next) => {
   try {
     const SQL = `
-      INSERT INTO employees(name, category_id)
+      INSERT INTO employees(name, department_id)
       VALUES($1, $2)
       RETURNING *
     `
-    const response = await client.query(SQL, [req.body.txt, req.body.category_id])
+    const response = await client.query(SQL, [req.body.name, req.body.department_id])
     res.send(response.rows[0])
   } catch (ex) {
     next(ex)
@@ -64,13 +64,12 @@ app.put('/api/employees/:id', async (req, res, next) => {
   try {
     const SQL = `
       UPDATE employees
-      SET txt=$1, ranking=$2, category_id=$3, updated_at= now()
-      WHERE id=$4 RETURNING *
+      SET name=$1, department_id=$2, updated_at= now()
+      WHERE id=$3 RETURNING *
     `
     const response = await client.query(SQL, [
-      req.body.txt,
-      req.body.ranking,
-      req.body.category_id,
+      req.body.name,
+      req.body.department_id,
       req.params.id
     ])
     res.send(response.rows[0])
@@ -82,7 +81,7 @@ app.put('/api/employees/:id', async (req, res, next) => {
 const init = async () => {
   await client.connect()
   let SQL = `
-    DROP TABLE IF EXISTS employees cascade;
+    DROP TABLE IF EXISTS employees;
     DROP TABLE IF EXISTS departments;
     CREATE TABLE departments(
       id SERIAL PRIMARY KEY,
@@ -92,8 +91,7 @@ const init = async () => {
       id SERIAL PRIMARY KEY,
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP DEFAULT now(),
-      ranking INTEGER DEFAULT 3 NOT NULL,
-      employees VARCHAR(255) NOT NULL,
+      names VARCHAR(255) NOT NULL,
       department_id INTEGER REFERENCES departments(id) NOT NULL
     );
   `
@@ -103,11 +101,11 @@ const init = async () => {
     INSERT INTO departments(name) VALUES('Stow');
     INSERT INTO departments(name) VALUES('Pick');
     INSERT INTO departments(name) VALUES('Ship Dock');
-    INSERT INTO employees(employees, department_id) VALUES('Jenni Smith', (SELECT id FROM departments WHERE name='Pick'));
-    INSERT INTO employees(employees, department_id) VALUES('Pepper Thompson', (SELECT id FROM departments WHERE name='Pick'));
-    INSERT INTO employees(employees, department_id) VALUES('Jimmy Arthur', (SELECT id FROM departments WHERE name='Stow'));
-    INSERT INTO employees(employees, department_id) VALUES('Beth Caspian', (SELECT id FROM departments WHERE name='Stow'));
-    INSERT INTO employees(employees, department_id) VALUES('Lauri Underwood', (SELECT id FROM departments WHERE name='Ship Dock'));
+    INSERT INTO employees(names, department_id) VALUES('Jenni Smith', (SELECT id FROM departments WHERE name='Pick'));
+    INSERT INTO employees(names, department_id) VALUES('Pepper Thompson', (SELECT id FROM departments WHERE name='Pick'));
+    INSERT INTO employees(names, department_id) VALUES('Jimmy Arthur', (SELECT id FROM departments WHERE name='Stow'));
+    INSERT INTO employees(names, department_id) VALUES('Beth Caspian', (SELECT id FROM departments WHERE name='Stow'));
+    INSERT INTO employees(names, department_id) VALUES('Lauri Underwood', (SELECT id FROM departments WHERE name='Ship Dock'));
   `
   await client.query(SQL) //Cascade drops any foreign key that's reference that specific table's ID. 
   console.log('data seeded')
