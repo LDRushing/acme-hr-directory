@@ -4,7 +4,7 @@ const app = express();
 const path = require('path');
 const pg = require('pg');
 // static routes here (you only need these for deployment)
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/employees')
+const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/acme_hr_directory')
 
 app.use(express.json());
 app.use(require('morgan')('dev'));
@@ -34,9 +34,9 @@ app.get('/api/departments', async (req, res, next) => {
 app.post('/api/employees', async (req, res, next) => {
     try {
         const SQL = `INSERT INTO employees(name, department_id)
-        VALUES ($1, (SELECT id FROM departments WHERE name=$2))
-        RETURNING *`
-        const result = await client.query(SQL, [req.body.name, req.body.departmentName])
+        VALUES ($1, $2)
+        RETURNING * `
+        const result = await client.query(SQL, [req.body.name, req.body.department_id])
         res.send(result.rows[0])
     } catch (ex) {
         next(ex)
@@ -56,15 +56,18 @@ app.delete('/api/employees/:id', async (req, res, next) => {
 });
 app.put('/api/employees/:id', async (req, res, next) => {
     try {
-        const SQL = `UPDATE employees
-        SET name = $1, department_id = (SELECT id FROM departments WHERE name=$2), updated_at=now()
-        WHERE id = $3 RETURNING *`
-        const result = await client.query(SQL, [req.body.name, req.body.departmentName, req.params.id])
-        res.send(result.rows[0])
+      const SQL = `
+        UPDATE employees
+        SET name=$1, department_id=$2, updated_at= now()
+        WHERE id=$3 RETURNING *
+      `
+      const result = await client.query(SQL, [req.body.name, req.body.department_id, req.params.id
+      ])
+      res.send(result.rows[0])
     } catch (ex) {
-        next(ex)
+      next(ex)
     }
-});
+  });
 
 // create your init function
 const init = async () => {
